@@ -39,6 +39,51 @@ US Geological Survery USGS (waterdata.usgs.gov/az/nwis/gw)
 Language(s): Python / Jupyter Notebook<br/>
 Libraries: Scipy / Numpy / Pandas / Matplotlib / pylab
 
+#### Basic Commands
+* read_csv
+* dataframe.head()
+* dataframe.column.sum()
+* dataframe.column.mean()
+* dataframe.mean(axis=0) < - row-wise means
+* t, p = stats.ttest_ind(list1, list2)
+* dataframe.groupby('Year')['Temp-F'].mean()
+
+
+#### Intermediate Commands
+* df.apply(pd.to_numeric, errors='coerce') < - get rid of NaN
+* Fit line to data using polynomial least squares fit x = cols, y= mean_prec<br/>
+m, b = np.polyfit(cols, mean_prec, 1) #m = slope, b = intercept #slope = -0.17<br/>
+ax.plot(cols, m*cols + b, color='red', lw=4)
+
+### Statistics Code Sample
+
+#### to model rain using normal distribution over a ten year period
+for i in range(4):
+    period_mean = ten_yr[i].mean()
+    stdev = ten_yr[i].std()
+    
+    ten_yr_summ.append([period_mean,stdev])
+
+    #get a normal sample based on the ten year mean, std of each sample
+    data_norm = norm.rvs(size=10000, loc=period_mean, scale=stdev)
+    y = norm.pdf(data_norm,0,1)
+    
+    axs[i].hist(data_norm,bins=50,color=colors[i], alpha=0.4)
+    axs[i].vlines(period_mean,0,700,colors=lines[i])
+    axs[i].set_xlabel('mean')
+    axs[i].set_xlim(-10,60)
+    axs[i].set_ylim(0,700)
+    axs[i].set_ylabel('count')
+    axs[i].set_title('Decade :' + str(i+1))
+
+#### to model binomial distribution of wells (declining = 1 / rising = 0)
+
+for i in range(len(df20)):
+    if df20['WL 1998'][i] < df20['WL 2018'][i]:
+        acc_98.append(1)
+    else:
+        acc_98.append(0)
+        
 ### Methodology
 
 ##### Climate
